@@ -19,11 +19,11 @@ func (CloseHandler) CaddyModule() caddy.ModuleInfo {
 	}
 }
 
-// Handle implements layer4.Handler.
-func (h *CloseHandler) Handle(conn *layer4.Connection) error {
+// Serve implements layer4.NextHandler.
+func (h *CloseHandler) Serve(conn *layer4.Connection) error {
 	// 直接关闭底层连接
 	return conn.Close()
 }
 
-// 确保实现了 layer4.Handler 接口
-var _ layer4.Handler = (*CloseHandler)(nil)
+// 确保实现了 layer4.NextHandler 接口
+var _ layer4.NextHandler = (*CloseHandler)(nil)
