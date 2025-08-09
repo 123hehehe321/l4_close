@@ -1,8 +1,8 @@
 package closehandler
 
 import (
-	"github.com/mholt/caddy-l4/layer4"
 	"github.com/caddyserver/caddy/v2"
+	"github.com/mholt/caddy-l4/layer4"
 )
 
 func init() {
@@ -19,10 +19,10 @@ func (CloseHandler) CaddyModule() caddy.ModuleInfo {
 	}
 }
 
-// Serve implements layer4.Handler.
-func (h *CloseHandler) Serve(ctx *layer4.HandlerContext) error {
+// Handle implements layer4.Handler.
+func (h *CloseHandler) Handle(conn *layer4.Connection) error {
 	// 直接关闭底层连接
-	return ctx.Conn.Close()
+	return conn.Close()
 }
 
 // 确保实现了 layer4.Handler 接口
