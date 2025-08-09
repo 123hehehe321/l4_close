@@ -11,6 +11,7 @@ func init() {
 
 type CloseHandler struct{}
 
+// CaddyModule returns the Caddy module information.
 func (CloseHandler) CaddyModule() caddy.ModuleInfo {
 	return caddy.ModuleInfo{
 		ID:  "layer4.handlers.close",
@@ -18,7 +19,11 @@ func (CloseHandler) CaddyModule() caddy.ModuleInfo {
 	}
 }
 
-func (h *CloseHandler) Serve(conn layer4.Conn) error {
-	conn.Close()
-	return nil
+// Serve implements layer4.Handler.
+func (h *CloseHandler) Serve(ctx *layer4.HandlerContext) error {
+	// 直接关闭底层连接
+	return ctx.Conn.Close()
 }
+
+// 确保实现了 layer4.Handler 接口
+var _ layer4.Handler = (*CloseHandler)(nil)
