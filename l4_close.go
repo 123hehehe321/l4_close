@@ -1,7 +1,6 @@
 package closehandler
 
 import (
-	"net"
 	"syscall"
 
 	"github.com/caddyserver/caddy/v2"
