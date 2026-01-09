@@ -39,15 +39,15 @@ func (h *CloseHandler) Handle(conn *layer4.Connection, next layer4.Handler) erro
 
 	// ====== 超时 + 最小读取保护（仅在配置时启用） ======
 	if h.Timeout > 0 || h.MinRead > 0 {
-		deadline := time.Time{}
 		if h.Timeout > 0 {
-			deadline = time.Now().Add(time.Duration(h.Timeout))
-			_ = rawConn.SetReadDeadline(deadline)
+			_ = rawConn.SetReadDeadline(
+				time.Now().Add(time.Duration(h.Timeout)),
+			)
 		}
 
 		ok := h.peekEnough(rawConn)
 
-		// 清除 deadline
+		// 清除 deadline，避免影响后续 handler
 		_ = rawConn.SetReadDeadline(time.Time{})
 
 		if !ok {
@@ -89,7 +89,7 @@ func (h *CloseHandler) peekEnough(rawConn net.Conn) bool {
 
 	err = sysConn.Control(func(fd uintptr) {
 		buf := make([]byte, h.MinRead)
-		n, serr = syscall.Recvfrom(
+		n, _, serr = syscall.Recvfrom(
 			int(fd),
 			buf,
 			syscall.MSG_PEEK,
